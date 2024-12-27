@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="ClearHear.MainPage"
+            BackgroundColor="White">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Master Volume -->
+            <Label Text="Master Volume" FontSize="18" HorizontalOptions="Center" />
+            <Grid ColumnSpacing="10">
+                <Slider x:Name="MasterVolumeSlider" Minimum="100" Maximum="500" Value="200" ValueChanged="OnMasterVolumeChanged" />
+                <Entry x:Name="MasterVolumeEntry" WidthRequest="50" Keyboard="Numeric" Text="200" TextChanged="OnEntryTextChanged" />
+            </Grid>
+
+            <!-- Start/Stop Button -->
+            <Button x:Name="StartStopButton" Text="Start" BackgroundColor="Green" TextColor="White" Clicked="OnStartStopClicked"/>
+
+            <!-- Input/Output Device Selection -->
+            <HorizontalStackLayout Spacing="15">
+                <Picker x:Name="InputDevicePicker" Title="Input Device" WidthRequest="150" SelectedIndexChanged="SelectInputDevice" />
+                <Picker x:Name="OutputDevicePicker" Title="Output Device" WidthRequest="150" SelectedIndexChanged="SelectOutputDevice" />
+            </HorizontalStackLayout>
+
+            <!-- Profile Buttons -->
+            <Label Text="Profiles" FontSize="18" HorizontalOptions="Center" />
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                <Button x:Name="Profile1Button" Text="1" WidthRequest="50" HeightRequest="50" BackgroundColor="LightGray" Clicked="OnProfileClicked"/>
+                <Button x:Name="Profile2Button" Text="2" WidthRequest="50" HeightRequest="50" BackgroundColor="LightBlue" Clicked="OnProfileClicked" />
+                <Button x:Name="Profile3Button" Text="3" WidthRequest="50" HeightRequest="50" BackgroundColor="LightGreen" Clicked="OnProfileClicked" />
+                <Button x:Name="Profile4Button" Text="4" WidthRequest="50" HeightRequest="50" BackgroundColor="LightYellow" Clicked="OnProfileClicked" />
+                <Button x:Name="Profile5Button" Text="5" WidthRequest="50" HeightRequest="50" BackgroundColor="LightPink" Clicked="OnProfileClicked" />
+            </HorizontalStackLayout>
+
+            <!-- Audio Band Mixer -->
+            <Label Text="Audio Band Mixer" FontSize="18" HorizontalOptions="Center" />
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <VerticalStackLayout>
+                    <Slider x:Name="Band1Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
+                    <Entry x:Name="Band1Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Slider x:Name="Band2Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
+                    <Entry x:Name="Band2Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Slider x:Name="Band3Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
+                    <Entry x:Name="Band3Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Slider x:Name="Band4Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
+                    <Entry x:Name="Band4Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <Slider x:Name="Band5Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
+                    <Entry x:Name="Band5Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
