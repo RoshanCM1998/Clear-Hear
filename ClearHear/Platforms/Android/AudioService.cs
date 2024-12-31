@@ -1,6 +1,5 @@
 ﻿using Android.Content;
 using Android.Media;
-using MediaStream = Android.Media.Stream;
 using AndroidApp = Android.App;
 using NAudio.Dsp;
 
@@ -13,7 +12,7 @@ namespace ClearHear.Platforms.Android
         private bool _isProcessing;
         private Thread? _processingThread;
         private float _masterVolume = 1.0f;
-        private float[] _bandGains = [1, 1, 1, 1, 1];
+        private float[] _bandGains = [1, 1, 1, 1, 1, 1];
         private readonly AudioManager _audioManager;
         private List<AudioDeviceInfo> _inputDevices;
         private List<AudioDeviceInfo> _outputDevices;
@@ -37,7 +36,6 @@ namespace ClearHear.Platforms.Android
 
             int bufferSize = AudioRecord.GetMinBufferSize(44100, ChannelIn.Mono, Encoding.Pcm16bit);
             _audioRecord = new AudioRecord(AudioSource.Mic, 44100, ChannelIn.Mono, Encoding.Pcm16bit, bufferSize);
-            //_audioTrack = new AudioTrack(MediaStream.Music, 44100, ChannelOut.Mono, Encoding.Pcm16bit, bufferSize, AudioTrackMode.Stream);
 
             // Safely build AudioTrack using nullable handling
             var audioAttributes = new AudioAttributes.Builder()?
@@ -101,25 +99,30 @@ namespace ClearHear.Platforms.Android
                                             device.Type == AudioDeviceType.WiredHeadset ||
                                             device.Type == AudioDeviceType.UsbHeadset ||
                                             device.Type == AudioDeviceType.BleHeadset ||
-                                            device.Type == AudioDeviceType.BluetoothA2dp ||
-                                            device.Type == AudioDeviceType.BluetoothSco)
+                                            //device.Type == AudioDeviceType.BluetoothA2dp ||
+                                            device.Type == AudioDeviceType.BluetoothSco
+                                            )
                                     .ToList();
 
             // Fetching output devices (Speakers, Bluetooth)
             _outputDevices = odTemp.Where(device => device.Type == AudioDeviceType.BuiltinSpeaker ||
                                             device.Type == AudioDeviceType.BluetoothA2dp ||
                                             device.Type == AudioDeviceType.BleHeadset ||
-                                            device.Type == AudioDeviceType.BluetoothSco ||
+                                            //device.Type == AudioDeviceType.BluetoothSco ||
                                             device.Type == AudioDeviceType.HearingAid ||
                                             device.Type == AudioDeviceType.WiredHeadphones ||
                                             device.Type == AudioDeviceType.WiredHeadset)
                                     .ToList();
 
-            var nameOfInputDevices = _inputDevices.Select(device => device.ProductName?.ToString() ?? "")
-                                            .Where(device => !string.IsNullOrWhiteSpace(device)).ToList();
+            var nameOfInputDevices = _inputDevices
+                                        .Where(device => !string.IsNullOrWhiteSpace(device.ProductName))
+                                        .Select(device => device.Type == AudioDeviceType.BuiltinMic ? "Phone " + device.Address : device.ProductName + device.Address)
+                                        .ToList();
 
-            var nameOfOutputDevices = _outputDevices.Select(device => device.ProductName?.ToString() ?? "")
-                                            .Where(device => !string.IsNullOrWhiteSpace(device)).ToList();
+            var nameOfOutputDevices = _outputDevices
+                                        .Where(device => !string.IsNullOrWhiteSpace(device.ProductName))
+                                        .Select(device => device.Type == AudioDeviceType.BuiltinSpeaker ? "Phone " + device.Address : device.ProductName + device.Address)
+                                        .ToList();
 
 
             return (nameOfInputDevices, nameOfOutputDevices);
@@ -192,14 +195,18 @@ namespace ClearHear.Platforms.Android
             // Perform FFT
             FastFourierTransform.FFT(true, (int)Math.Log(length, 2), fft);
 
-            // Process each frequency band
-            int bandSize = length / 5;
-            for (int band = 0; band < 5; band++)
-            {
-                int start = band * bandSize;
-                int end = (band + 1) * bandSize;
+            // Frequency bands (in Hz) for hearing aid:
+            int[] bandFrequencies = { 125, 500, 1000, 2000, 4000, 8000 }; // Start of each frequency band
+            int bandSize = length / 2;  // Total frequency range (e.g., 20 Hz to 20k Hz, split in FFT bins)
 
-                for (int i = start; i < end; i++)
+
+            // Process each frequency band
+            for (int band = 0; band < 6; band++)
+            {
+                int startIndex = (int)((bandFrequencies[band] / 44100.0) * length);  // Normalize for the FFT size (assuming 44100 Hz sample rate)
+                int endIndex = (band == 5) ? length / 2 : (int)((bandFrequencies[band + 1] / 44100.0) * length);
+
+                for (int i = startIndex; i < endIndex; i++)
                 {
                     fft[i].X *= _bandGains[band];
                     fft[i].Y *= _bandGains[band];
