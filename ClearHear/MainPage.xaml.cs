@@ -1,4 +1,6 @@
-﻿namespace ClearHear;
+﻿using Android.Net.Sip;
+
+namespace ClearHear;
 
 public partial class MainPage : ContentPage
 {
@@ -13,14 +15,14 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         _audioService = audioService;
 
+        inputDevices = new List<string>();
+        outputDevices = new List<string>();
         LoadDevices();
 
         int lastProfile = Preferences.Get("LastSelectedProfile", 1);
         currentProfile = lastProfile;
+        SetProfile(currentProfile, currentProfile);
         LoadProfile(lastProfile);
-
-        inputDevices = new List<string>();
-        outputDevices = new List<string>();
     }
 
     private async Task CheckPermissionsAndStartAudio()
@@ -75,32 +77,102 @@ public partial class MainPage : ContentPage
         Preferences.Set($"Profile{profileIndex}_Band3", Band3Slider.Value);
         Preferences.Set($"Profile{profileIndex}_Band4", Band4Slider.Value);
         Preferences.Set($"Profile{profileIndex}_Band5", Band5Slider.Value);
+        Preferences.Set($"Profile{profileIndex}_Band6", Band6Slider.Value);
         Preferences.Set("LastSelectedProfile", profileIndex);
+    }
+
+    private void SetProfile(int newProfile, int oldProfile)
+    {
+        Button[] profileButtons = [ Profile1Button, Profile2Button, Profile3Button, Profile4Button, Profile5Button ];
+        
+        profileButtons[oldProfile - 1].BorderColor = null;
+        profileButtons[oldProfile - 1].BorderWidth = 0;
+
+        profileButtons[newProfile - 1].BorderColor = Colors.Black;
+        profileButtons[newProfile - 1].BorderWidth = 2;
     }
 
     private void LoadProfile(int profileIndex)
     {
-        Band1Slider.Value = Preferences.Get($"Profile{profileIndex}_Band1", 50);
-        Band2Slider.Value = Preferences.Get($"Profile{profileIndex}_Band2", 50);
-        Band3Slider.Value = Preferences.Get($"Profile{profileIndex}_Band3", 50);
-        Band4Slider.Value = Preferences.Get($"Profile{profileIndex}_Band4", 50);
-        Band5Slider.Value = Preferences.Get($"Profile{profileIndex}_Band5", 50);
+        string p1 = Preferences.Get($"Profile{profileIndex}_Band1", "100");
+        string p2 = Preferences.Get($"Profile{profileIndex}_Band2", "100");
+        string p3 = Preferences.Get($"Profile{profileIndex}_Band3", "100");
+        string p4 = Preferences.Get($"Profile{profileIndex}_Band4", "100");
+        string p5 = Preferences.Get($"Profile{profileIndex}_Band5", "100");
+        string p6 = Preferences.Get($"Profile{profileIndex}_Band6", "100");
+
+        if(double.TryParse(p1, out double pd1))
+        {
+            Band1Slider.Value = pd1;
+        }
+        else
+        {
+            Band1Slider.Value = 100;
+        }
+
+        if (double.TryParse(p2, out double pd2))
+        {
+            Band2Slider.Value = pd2;
+        }
+        else
+        {
+            Band2Slider.Value = 100;
+        }
+
+        if (double.TryParse(p3, out double pd3))
+        {
+            Band3Slider.Value = pd3;
+        }
+        else
+        {
+            Band3Slider.Value = 100;
+        }
+
+        if (double.TryParse(p4, out double pd4))
+        {
+            Band4Slider.Value = pd4;
+        }
+        else
+        {
+            Band4Slider.Value = 100;
+        }
+
+        if (double.TryParse(p5, out double pd5))
+        {
+            Band5Slider.Value = pd5;
+        }
+        else
+        {
+            Band5Slider.Value = 100;
+        }
+
+        if (double.TryParse(p6, out double pd6))
+        {
+            Band6Slider.Value = pd6;
+        }
+        else
+        {
+            Band6Slider.Value = 100;
+        }
     }
 
     private void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
     {
-        Band1Entry.Text = Band1Slider.Value.ToString();
-        Band2Entry.Text = Band2Slider.Value.ToString();
-        Band3Entry.Text = Band3Slider.Value.ToString();
-        Band4Entry.Text = Band4Slider.Value.ToString();
-        Band5Entry.Text = Band5Slider.Value.ToString();
+        Band1Entry.Text = Math.Round(Band1Slider.Value, 0).ToString();
+        Band2Entry.Text = Math.Round(Band2Slider.Value, 0).ToString();
+        Band3Entry.Text = Math.Round(Band3Slider.Value, 0).ToString();
+        Band4Entry.Text = Math.Round(Band4Slider.Value, 0).ToString();
+        Band5Entry.Text = Math.Round(Band5Slider.Value, 0).ToString();
+        Band6Entry.Text = Math.Round(Band6Slider.Value, 0).ToString();
 
         UpdateAudioGains();
     }
 
     private void OnMasterVolumeChanged(object sender, ValueChangedEventArgs e)
     {
-        MasterVolumeEntry.Text = MasterVolumeSlider.Value.ToString();
+        double temp = MasterVolumeSlider.Value;
+        temp = Math.Round(temp, 0);
+        MasterVolumeEntry.Text = temp.ToString();
         float val = (float)MasterVolumeSlider.Value;
         _audioService.SetVolume(val);
     }
@@ -109,7 +181,7 @@ public partial class MainPage : ContentPage
     {
         if (sender is Entry entry)
         {
-            switch(entry.Text)
+            switch (entry.AutomationId)
             {
                 case "Band1Entry": 
                     OnBandValueChange(sender, Band1Slider);
@@ -126,6 +198,9 @@ public partial class MainPage : ContentPage
                 case "Band5Entry":
                     OnBandValueChange(sender, Band5Slider);
                     break;
+                case "Band6Entry":
+                    OnBandValueChange(sender, Band6Slider);
+                    break;
                 case "MasterVolumeEntry":
                     OnBandValueChange(sender, MasterVolumeSlider);
                     break;
@@ -135,7 +210,7 @@ public partial class MainPage : ContentPage
 
     private void OnBandValueChange(object sender, Slider slider)
     {
-        if (sender is Entry entry && double.TryParse(entry.Text, out double entryNumber))
+        if (sender is Entry entry && double.TryParse(entry.Text, out double entryNumber) && 50 <= entryNumber && entryNumber <= 500)
         {
             slider.Value = entryNumber;
             if (slider == MasterVolumeSlider)
@@ -158,7 +233,8 @@ public partial class MainPage : ContentPage
             (float)(Band2Slider.Value / 100.0),
             (float)(Band3Slider.Value / 100.0),
             (float)(Band4Slider.Value / 100.0),
-            (float)(Band5Slider.Value / 100.0)
+            (float)(Band5Slider.Value / 100.0),
+            (float)(Band6Slider.Value / 100.0)
         };
 
         _audioService.SetBandGains(gains);
@@ -166,12 +242,21 @@ public partial class MainPage : ContentPage
 
     private void OnProfileClicked(object sender, EventArgs e)
     {
-        if (sender is Button button && int.TryParse(button.Text, out int profileIndex))
+        if (sender is Button button && int.TryParse(button.Text, out int profileIndex) && currentProfile != profileIndex)
         {
             SaveProfile(currentProfile);
             LoadProfile(profileIndex);
+            SetProfile(profileIndex, currentProfile);
             currentProfile = profileIndex;
             DisplayAlert("Profile Loaded", $"Profile {profileIndex} loaded.", "OK");
+        }
+    }
+
+    private void OnSaveClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button)
+        {
+            SaveProfile(currentProfile);
         }
     }
 

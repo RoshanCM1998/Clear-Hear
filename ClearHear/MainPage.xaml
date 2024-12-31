@@ -9,17 +9,24 @@
             <!-- Master Volume -->
             <Label Text="Master Volume" FontSize="18" HorizontalOptions="Center" />
             <Grid ColumnSpacing="10">
-                <Slider x:Name="MasterVolumeSlider" Minimum="100" Maximum="500" Value="200" ValueChanged="OnMasterVolumeChanged" />
-                <Entry x:Name="MasterVolumeEntry" WidthRequest="50" Keyboard="Numeric" Text="200" TextChanged="OnEntryTextChanged" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!-- Adjusts to Slider width -->
+                    <ColumnDefinition Width="50" />
+                    <!-- Adjusts to Entry width -->
+                </Grid.ColumnDefinitions>
+
+                <Slider x:Name="MasterVolumeSlider" Minimum="100" Maximum="500" Value="200" HeightRequest="50" BackgroundColor="AliceBlue" ThumbColor="Aquamarine" MinimumTrackColor="LightCoral" MaximumTrackColor="Coral" ValueChanged="OnMasterVolumeChanged" />
+                <Entry x:Name="MasterVolumeEntry" AutomationId="MasterVolumeEntry" Grid.Column="1" WidthRequest="50" Keyboard="Numeric" Text="200" BackgroundColor="LightBlue" TextColor="Black" PlaceholderColor="Gray" TextChanged="OnEntryTextChanged" />
             </Grid>
 
             <!-- Start/Stop Button -->
             <Button x:Name="StartStopButton" Text="Start" BackgroundColor="Green" TextColor="White" Clicked="OnStartStopClicked"/>
 
             <!-- Input/Output Device Selection -->
-            <HorizontalStackLayout Spacing="15">
-                <Picker x:Name="InputDevicePicker" Title="Input Device" WidthRequest="150" SelectedIndexChanged="SelectInputDevice" />
-                <Picker x:Name="OutputDevicePicker" Title="Output Device" WidthRequest="150" SelectedIndexChanged="SelectOutputDevice" />
+            <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                <Picker x:Name="InputDevicePicker" Title="Input Device" WidthRequest="150" BackgroundColor="LightSalmon" TitleColor="DarkKhaki" TextColor="Black"  SelectedIndexChanged="SelectInputDevice" />
+                <Picker x:Name="OutputDevicePicker" Title="Output Device" WidthRequest="150" BackgroundColor="LightCyan" TitleColor="DarkKhaki" TextColor="Black" SelectedIndexChanged="SelectOutputDevice" />
             </HorizontalStackLayout>
 
             <!-- Profile Buttons -->
@@ -33,30 +40,173 @@
             </HorizontalStackLayout>
 
             <!-- Audio Band Mixer -->
-            <Label Text="Audio Band Mixer" FontSize="18" HorizontalOptions="Center" />
-            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                <VerticalStackLayout>
-                    <Slider x:Name="Band1Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
-                    <Entry x:Name="Band1Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Slider x:Name="Band2Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
-                    <Entry x:Name="Band2Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Slider x:Name="Band3Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
-                    <Entry x:Name="Band3Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Slider x:Name="Band4Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
-                    <Entry x:Name="Band4Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
-                </VerticalStackLayout>
-                <VerticalStackLayout>
-                    <Slider x:Name="Band5Slider" Minimum="50" Maximum="500" Value="250" HeightRequest="200" WidthRequest="50" Rotation="270" ValueChanged="OnSliderValueChanged" />
-                    <Entry x:Name="Band5Entry" WidthRequest="50" Keyboard="Numeric" Text="250" TextChanged="OnEntryTextChanged" />
-                </VerticalStackLayout>
-            </HorizontalStackLayout>
+            <Label Text="Audio Band Mixer" FontSize="18" TextColor="Black" HorizontalOptions="Center" />
+            <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="260,50,20" Padding="10">
+                <!-- Band 1 -->
+                <Slider x:Name="Band1Slider"
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band1Entry"
+                    AutomationId="Band1Entry"
+                    Grid.Column="0"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="125Hz-500Hz" Grid.Column="0" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
 
+                <!-- Band 2 -->
+                <Slider x:Name="Band2Slider"
+                    AutomationId="Band2Entry"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band2Entry"
+                    AutomationId="Band2Entry"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="500Hz-1kHz" Grid.Column="1" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+
+                <!-- Band 3 -->
+                <Slider x:Name="Band3Slider"
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band3Entry"
+                    AutomationId="Band3Entry"
+                    Grid.Column="2"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="1kHz-2kHz" Grid.Column="2" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+
+                <!-- Band 4 -->
+                <Slider x:Name="Band4Slider"
+                    Grid.Column="3"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band4Entry"
+                    AutomationId="Band4Entry"
+                    Grid.Column="3"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="2kHz-4kHz" Grid.Column="3" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+
+                <!-- Band 5 -->
+                <Slider x:Name="Band5Slider"
+                    Grid.Column="4"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band5Entry"
+                    AutomationId="Band5Entry"
+                    Grid.Column="4"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="4kHz-8kHz" Grid.Column="4" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+
+                <!-- Band 6 -->
+                <Slider x:Name="Band6Slider"
+                    Grid.Column="5"
+                    Grid.Row="0"
+                    Minimum="50"
+                    Maximum="500"
+                    HeightRequest="50"
+                    WidthRequest="250"
+                    Rotation="270"
+                    BackgroundColor="AliceBlue"
+                    ThumbColor="Aquamarine"
+                    MinimumTrackColor="LightCoral"
+                    MaximumTrackColor="Coral"
+                    ValueChanged="OnSliderValueChanged" />
+                <Entry x:Name="Band6Entry"
+                    AutomationId="Band6Entry"
+                    Grid.Column="5"
+                    Grid.Row="1"
+                    WidthRequest="50"
+                    Keyboard="Numeric"
+                    Text="250"
+                    BackgroundColor="LightPink"
+                    TextColor="Black"
+                    PlaceholderColor="Gray"
+                    TextChanged="OnEntryTextChanged" />
+                <Label Text="8kHz-20kHz" Grid.Column="5" Grid.Row="2" FontSize="12" TextColor="Gray" HorizontalOptions="Center" />
+            </Grid>
+
+            <Button x:Name="SaveButton" Text="Save" BackgroundColor="LightBlue" TextColor="White" Clicked="OnSaveClicked"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
